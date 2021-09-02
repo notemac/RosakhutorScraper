@@ -17,7 +17,7 @@ namespace RosakhutorScraperClient
                     cameras = await scraper.ParseNextAsync(withDetailedInfo: true);
                     foreach (CameraInfo camera in cameras)
                         Console.WriteLine($"{camera.Name}\n{camera.HlsUrl}\n{camera.DetailedInfoJSON}");
-                } while (cameras.Count > 0);
+                } while (!scraper.LastPageParsed);
             }  
             Console.ReadKey();
         }

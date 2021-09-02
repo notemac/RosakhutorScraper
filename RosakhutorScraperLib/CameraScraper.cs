@@ -15,7 +15,6 @@ namespace RosakhutorScraperLib
         #region Fields
         private bool _disposed = false;
         private int _nextPage = 1;
-        private bool _lastPageParsed = false;
 
         private CameraParser _parser;
         private ScraperHttpClient _httpClient;
@@ -28,6 +27,10 @@ namespace RosakhutorScraperLib
         private const string uHlsUrlFormat = "https://sochi.camera:8081/cam_{0}/video.m3u8?token=bisv_dgZK";
 
         private readonly Dictionary<HttpRequestHeadersType, Dictionary<string, string>> _defaultHeadersCollection;
+        #endregion
+
+        #region Properties
+        public bool LastPageParsed { get; private set; } = false;
         #endregion
 
         #region Methods
@@ -47,7 +50,7 @@ namespace RosakhutorScraperLib
         }
         public async Task<List<CameraInfo>> ParseNextAsync(bool withDetailedInfo = false)
         {
-            if (_lastPageParsed)
+            if (LastPageParsed)
                 return new List<CameraInfo>(0);
 
             #region Get cameras names
@@ -57,7 +60,7 @@ namespace RosakhutorScraperLib
 
             if (names.Count == 0)
             {
-                _lastPageParsed = true;
+                LastPageParsed = true;
                 return new List<CameraInfo>(0);
             }
             int camerasCount = names.Count;
@@ -110,7 +113,7 @@ namespace RosakhutorScraperLib
             if (nextPage < 1)
                 throw new ArgumentOutOfRangeException("nextPage", nextPage, "Page number must be greater than 0!");
             _nextPage = nextPage;
-            _lastPageParsed = false;
+            LastPageParsed = false;
         }
         private static Dictionary<string, string> GetHttpRequestHeaders(HttpRequestHeadersType type)
         {
